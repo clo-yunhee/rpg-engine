@@ -22,6 +22,8 @@ int main()
     TileMap map(tileset, 16, 8);
     map.setTiles(level);
 
+    sf::Clock frameClock;
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -30,6 +32,8 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
         }
+
+        sf::Time frameTime = frameClock.restart();
 
         window.clear(sf::Color::Black);
         window.draw(map);
