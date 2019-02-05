@@ -27,8 +27,8 @@
 TARGET := game
 
 # Modify as necessary
-CXXFLAGS += -msse -msse2 -msse3 -march=native -mfpmath=sse 
-LDFLAGS += -lsfml-graphics -lsfml-window -lsfml-system
+CXXFLAGS += -pthread -msse -msse2 -msse3 -march=native -mfpmath=sse 
+LDFLAGS += -pthread -lsfml-graphics -lsfml-window -lsfml-system
 
 SRC_DIR := src
 INC_DIR := inc

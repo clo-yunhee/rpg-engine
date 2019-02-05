@@ -43,7 +43,8 @@ void TileMap::setTile(unsigned int i, unsigned int j, unsigned int tileNumber)
 void TileMap::setTiles(const unsigned int *tiles)
 {
     for (unsigned int i = 0; i < m_width; ++i)
-        for (unsigned int j = 0; j < m_height; ++j) {
+        for (unsigned int j = 0; j < m_height; ++j)
+        {
             unsigned int tileNumber = tiles[i + j * m_width];
 
             setTile(i, j, tileNumber);
