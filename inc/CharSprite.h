@@ -13,18 +13,20 @@ class CharSprite : public sf::Drawable, public sf::Transformable
         CharSprite(const std::string& charset, sf::Vector2u charSize);
 
         void rotate(CharSet::Direction direction);
+        void tickFrame();
+        void resetFrame();
 
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-        void updateSpriteRect();
+        void updateSpriteRect(CharSet::Direction direction, unsigned int frame);
 
         CharSet m_charSet;
         sf::Sprite m_sprite;
 
         CharSet::Direction m_direction;
-        const Animation *m_anim;
         unsigned int m_animFrame;
+        const Animation *m_anim;
 };
 
 

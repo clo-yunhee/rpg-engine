@@ -2,9 +2,11 @@
 
 
 CharSprite::CharSprite(const CharSet& charset)
-    : m_charSet(charset), m_sprite(*charset.getTexture())
+    : m_charSet(charset), m_sprite(*charset.getTexture()),
+      m_direction(CharSet::Direction::down), m_animFrame(1),
+      m_anim(&charset.getAnimation(m_direction))
 {
-    rotate(CharSet::Direction::down);
+    updateSpriteRect(m_direction, m_animFrame);
 }
 
 CharSprite::CharSprite(const std::string& charset, sf::Vector2u charSize)
@@ -14,11 +16,19 @@ CharSprite::CharSprite(const std::string& charset, sf::Vector2u charSize)
 
 void CharSprite::rotate(CharSet::Direction direction)
 {
-    m_anim = &m_charSet.getAnimation(direction);
-    m_direction = direction;
-    m_animFrame = 1; // idle
+    updateSpriteRect(direction, 1);
+}
 
-    updateSpriteRect();
+void CharSprite::tickFrame()
+{
+    unsigned int nextFrame = (m_animFrame + 1) % m_anim->getSize();
+
+    updateSpriteRect(m_direction, nextFrame);
+}
+
+void CharSprite::resetFrame()
+{
+    updateSpriteRect(m_direction, 1);
 }
 
 void CharSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -30,10 +40,14 @@ void CharSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const
     target.draw(m_sprite, states);
 }
 
-void CharSprite::updateSpriteRect()
+void CharSprite::updateSpriteRect(CharSet::Direction direction, unsigned int frame)
 {
-    const Animation& anim(m_charSet.getAnimation(m_direction));
-    const sf::IntRect& frameRect(anim.getFrame(m_animFrame));
+    const Animation *anim((direction != m_direction) ? &m_charSet.getAnimation(direction) : m_anim);
+    const sf::IntRect& frameRect(anim->getFrame(frame));
 
     m_sprite.setTextureRect(frameRect);
+    
+    m_anim = anim;
+    m_direction = direction;
+    m_animFrame = frame;
 }
