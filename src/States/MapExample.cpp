@@ -15,17 +15,20 @@ static constexpr unsigned int levelTiles[] =
 
 
 MapExample::MapExample()
-    : m_tileset("tileset.png", sf::Vector2u(32, 32)),
-      m_level(m_tileset, 16, 8)
+    : m_tileSet("tileset.png", sf::Vector2u(32, 32)),
+      m_tileMap(m_tileSet, 16, 8),
+      m_charSet("charset.png", sf::Vector2u(32, 32)),
+      m_charSprite(m_charSet)
 {
-    m_level.setTiles(levelTiles);
+    m_tileMap.setTiles(levelTiles);
 }
 
 void MapExample::draw(sf::RenderTarget& target, sf::Time delta) const
 {
     (void) delta;
 
-    target.draw(m_level);
+    target.draw(m_tileMap);
+    target.draw(m_charSprite);
 }
 
 void MapExample::update(sf::RenderTarget& target, sf::Time delta)

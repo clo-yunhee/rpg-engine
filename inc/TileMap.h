@@ -20,7 +20,7 @@ class TileMap : public sf::Drawable, public sf::Transformable
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-        const TileSet& m_tileSet;
+        TileSet m_tileSet;
         unsigned int m_width;
         unsigned int m_height;
 

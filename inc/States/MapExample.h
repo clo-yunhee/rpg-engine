@@ -4,8 +4,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "GameState.h"
-#include "TileSet.h"
 #include "TileMap.h"
+#include "CharSprite.h"
 
 class MapExample : public GameState
 {
@@ -17,8 +17,11 @@ class MapExample : public GameState
         void update(sf::RenderTarget& target, sf::Time delta);
         void handleInput(sf::RenderTarget& target);
 
-        TileSet m_tileset;
-        TileMap m_level;
+        TileSet m_tileSet;
+        TileMap m_tileMap;
+
+        CharSet m_charSet;
+        CharSprite m_charSprite;
 };
 
 
