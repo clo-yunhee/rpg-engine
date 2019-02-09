@@ -1,23 +1,17 @@
-#ifndef GAMESTATE_H
-#define GAMESTATE_H
+#ifndef ENTITY_H
+#define ENTITY_H
 
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
-#include "Game.h"
-#include "Entity.h"
 
-class GameState
+class Entity 
 {
     protected:
-        Game *game;
-        
         virtual void draw(sf::RenderTarget& target, sf::Time delta) const = 0;
         virtual void update(sf::RenderTarget& target, sf::Time delta) = 0;
         virtual void handleInput() = 0;
-        
-        friend class Game;
 };
 
 
-#endif // GAMESTATE_H
+#endif // ENTITY_H 

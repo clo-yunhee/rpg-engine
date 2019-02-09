@@ -3,7 +3,7 @@
 
 CharSprite::CharSprite(const CharSet& charset)
     : m_charSet(charset), m_sprite(*charset.getTexture()),
-      m_direction(CharSet::Direction::down), m_animFrame(1),
+      m_direction(CharSet::Direction::Down), m_animFrame(1),
       m_anim(&charset.getAnimation(m_direction))
 {
     updateSpriteRect(m_direction, m_animFrame);
@@ -29,6 +29,16 @@ void CharSprite::tickFrame()
 void CharSprite::resetFrame()
 {
     updateSpriteRect(m_direction, 1);
+}
+
+CharSet::Direction CharSprite::getDirection() const
+{
+    return m_direction;
+}
+
+unsigned int CharSprite::getFrame() const
+{
+    return m_animFrame;
 }
 
 void CharSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const

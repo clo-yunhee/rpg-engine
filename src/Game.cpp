@@ -56,11 +56,16 @@ void Game::gameLoop()
 
     while (m_window.isOpen())
     {
+        GameState *state = peekState();
+        
         sf::Event event;
         while (m_window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed ||
+                    (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape))
+            {
                 m_window.close();
+            }
             else if (event.type == sf::Event::Resized)
             {
                 m_window.setView(sf::View(sf::FloatRect(0, 0, event.size.width, event.size.height)));
@@ -72,12 +77,10 @@ void Game::gameLoop()
         m_window.clear(sf::Color::Black);
         m_stateMtx.lock();
 
-        GameState *state = peekState();
         if (state != nullptr)
         {
-            state->handleInput(m_window);
+            state->handleInput();
             state->update(m_window, frameTime);
-
             state->draw(m_window, frameTime);
         }
         

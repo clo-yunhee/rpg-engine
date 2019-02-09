@@ -10,7 +10,7 @@ class CharSet
     public:
         enum class Direction 
         {
-            down = 0, left, right, up
+            Down = 0, Left, Right, Up
         };
 
         CharSet(const std::string& charset, sf::Vector2u charSize);

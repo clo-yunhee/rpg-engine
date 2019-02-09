@@ -18,7 +18,8 @@ MapExample::MapExample()
     : m_tileSet("tileset.png", sf::Vector2u(32, 32)),
       m_tileMap(m_tileSet, 16, 8),
       m_charSet("charset.png", sf::Vector2u(32, 32)),
-      m_charSprite(m_charSet)
+      m_charSprite(m_charSet),
+      m_charEntity(m_charSprite)
 {
     m_tileMap.setTiles(levelTiles);
 }
@@ -28,16 +29,19 @@ void MapExample::draw(sf::RenderTarget& target, sf::Time delta) const
     (void) delta;
 
     target.draw(m_tileMap);
-    target.draw(m_charSprite);
+
+    m_charEntity.draw(target, delta);
 }
 
 void MapExample::update(sf::RenderTarget& target, sf::Time delta)
 {
     (void) target;
     (void) delta;
+
+    m_charEntity.update(target, delta);
 }
 
-void MapExample::handleInput(sf::RenderTarget& target)
+void MapExample::handleInput()
 {
-    (void) target;
+    m_charEntity.handleInput();
 }

@@ -9,12 +9,14 @@ class CharSprite : public sf::Drawable, public sf::Transformable
 {
     public:
         CharSprite(const CharSet& charset);
-
         CharSprite(const std::string& charset, sf::Vector2u charSize);
 
         void rotate(CharSet::Direction direction);
         void tickFrame();
         void resetFrame();
+
+        CharSet::Direction getDirection() const;
+        unsigned int getFrame() const;
 
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
