@@ -41,6 +41,11 @@ unsigned int CharSprite::getFrame() const
     return m_animFrame;
 }
 
+const sf::Vector2u& CharSprite::getCharSize() const
+{
+    return m_charSet.getCharSize();
+}
+
 void CharSprite::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     states.transform *= getTransform();

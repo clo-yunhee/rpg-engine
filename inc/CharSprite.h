@@ -17,6 +17,7 @@ class CharSprite : public sf::Drawable, public sf::Transformable
 
         CharSet::Direction getDirection() const;
         unsigned int getFrame() const;
+        const sf::Vector2u& getCharSize() const;
 
     private:
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
