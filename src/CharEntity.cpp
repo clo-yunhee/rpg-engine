@@ -2,7 +2,7 @@
 #include <cmath>
 
 CharEntity::CharEntity(const CharSprite& sprite)
-    : m_sprite(sprite), m_frameSpeed(2), m_movSpeed(100), m_movesTileBased(true)
+    : m_sprite(sprite), m_frameSpeed(2), m_isTileBased(true), m_movSpeed(100), m_isMoving(false)
 {
 }
 
@@ -28,11 +28,10 @@ void CharEntity::update(sf::RenderTarget& target, sf::Time delta)
     (void) target;
 
     const auto& pos(m_sprite.getPosition());
-
-    bool moving(pos != m_target);
     unsigned int curFrame(m_sprite.getFrame());
 
-    if (moving || (curFrame != 1 && curFrame != 3))
+    // animate
+    if (m_isMoving || (curFrame != 1 && curFrame != 3))
     {
         // make sure to finish the animation even if not moving (until idle)
         m_frameDelay += delta;
@@ -43,18 +42,26 @@ void CharEntity::update(sf::RenderTarget& target, sf::Time delta)
         }
     }
 
-    if (moving)
+    // move
+    if (m_isMoving)
     {
+        sf::Vector2f distance(m_target - pos);
+
         m_movDelay += delta;
 
-        if (m_movDelay >= sf::milliseconds(50. / m_movSpeed)) {
-            sf::Vector2f distance(m_target - pos);
+        if (m_movDelay >= sf::milliseconds(50. / m_movSpeed))
+        {
             sf::Vector2f signs((distance.x > 0) - (distance.x < 0),
                                (distance.y > 0) - (distance.y < 0));
 
             m_sprite.move(signs);
 
             m_movDelay = sf::Time::Zero;
+        }
+
+        if (distance.x == 0 && distance.y == 0)
+        {
+            m_isMoving = false;
         }
     }
 
@@ -63,48 +70,35 @@ void CharEntity::update(sf::RenderTarget& target, sf::Time delta)
 void CharEntity::handleInput()
 {
     CharSet::Direction dir(m_sprite.getDirection());
-    sf::Vector2f target(m_sprite.getPosition());
 
     bool isLeftPressed(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)),
          isRightPressed(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)),
          isUpPressed(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)),
          isDownPressed(sf::Keyboard::isKeyPressed(sf::Keyboard::Down));
 
-    if (isLeftPressed)
-    {
-        dir = CharSet::Direction::Left;
-        if (!m_movesTileBased)
-            target.x -= m_frameSpeed;
-    }
-    if (isRightPressed)
-    {
-        dir = CharSet::Direction::Right;
-        if (!m_movesTileBased)
-            target.x += m_frameSpeed;
-    }
-    if (isUpPressed)
-    {
-        dir = CharSet::Direction::Up;
-        if (!m_movesTileBased)
-            target.y -= m_frameSpeed;
-    }
-    if (isDownPressed)
-    {
-        dir = CharSet::Direction::Down;
-        if (!m_movesTileBased)
-            target.y += m_frameSpeed;
-    }
+    if (isLeftPressed)   dir = CharSet::Direction::Left;
+    if (isRightPressed)  dir = CharSet::Direction::Right;
+    if (isUpPressed)     dir = CharSet::Direction::Up;
+    if (isDownPressed)   dir = CharSet::Direction::Down;
     
+    sf::Vector2f target(m_sprite.getPosition());
 
-    // wait for the end of the movement
-    if (m_movesTileBased)
+    if (!m_isTileBased)
+    {
+        if (isLeftPressed)   target.x--;
+        if (isRightPressed)  target.x++;
+        if (isUpPressed)     target.y--;
+        if (isDownPressed)   target.y++;
+
+        m_target = target;
+    }
+    else if (!m_isMoving)
     {
         const auto& size(m_sprite.getCharSize());
 
-        sf::Vector2f pos(floor(target.x / size.x) * size.x,
-                         floor(target.y / size.y) * size.y);
+        sf::Vector2f pos(floor(target.x / size.x + .5) * size.x,
+                         floor(target.y / size.y + .5) * size.y);
 
-        // only allow changing direction if 
         if (dir != m_sprite.getDirection() &&
                 (pos.x != target.x || pos.y != target.y))
         {
@@ -116,23 +110,27 @@ void CharEntity::handleInput()
         else if (dir == CharSet::Direction::Up)     pos.y -= size.y;
         else if (dir == CharSet::Direction::Down)   pos.y += size.y;
         
-        target = pos;
+        // only allow changing direction if on tile 
+        if (isLeftPressed || isRightPressed || isDownPressed || isUpPressed)
+        {
+            m_isMoving = true;
+            m_target = pos;
+        }
+
     }
+    else return;
 
     if (m_sprite.getDirection() != dir)
         m_sprite.rotate(dir);
-
-    if (isLeftPressed || isRightPressed || isUpPressed || isDownPressed)
-        m_target = target;
-    
 }
 
-void CharEntity::setTileBased(bool movesTileBased) 
+void CharEntity::setTileBased(bool isTileBased) 
 {
-    m_movesTileBased = movesTileBased;
+    m_isTileBased = isTileBased;
 }
 
-bool CharEntity::movesTileBased() const
+bool CharEntity::isTileBased() const
 {
-    return m_movesTileBased;
+    return m_isTileBased;
 }
+
